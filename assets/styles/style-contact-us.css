@@ -1,0 +1,12 @@
+.contact_header {
+    background-image: url('/images/contact_us/p3-title-img-1.jpg');
+}
+.contact_header_text {
+    text-align: center;
+    color: #FFA51E;
+    padding-top: 250px;
+}
+
+  .main-cont-contact{
+      margin-top: 100px;
+  }

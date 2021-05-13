@@ -1,0 +1,227 @@
+<div class="container">
+  <div class="row">
+    <div class="alert alert-success">
+      <i class="fa fa-info-circle" aria-hidden="true"></i> <%= message %>
+    </div>
+  </div>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/admin/adminwelcome">Welcome</a></li>
+    <li class="breadcrumb-item active">Manage Categories</li>
+  </ol>
+
+  <div class="container">
+    <table class="table table-dark table-hover table-bordered">
+      <thead>
+        <tr class="text-center">
+          <th>Name</th>
+          <th>Description</th>
+          <th>EDIT/DELETE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% let i = 0 %> <%categories.forEach(function(category) { i++;%>
+        <tr class="text-center">
+          <td class="align-middle category_name" id="category_name_<%=i%>">
+            <%=category.Name%>
+          </td>
+          <td class="align-middle category_desc" id="category_desc_<%=i%>">
+            <%=category.Description%>
+          </td>
+          <td>
+            <button
+              id="Edit_button_<%=i%>"
+              class="btn btn-primary btn-block edit_button"
+            >
+              <i class="fa fa-edit"></i> Edit</button
+            ><button
+              id="Delete_button_<%=i%>"
+              class="btn btn-danger btn-block delete_button"
+            >
+              <i class="fa fa-trash"></i> Delete
+            </button>
+          </td>
+        </tr>
+        <%})%>
+      </tbody>
+    </table>
+  </div>
+  <div class="container">
+    <div class="row m-auto text-center">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+    <button class="btn btn-success" id="Add_button">
+      <i class="fa fa-plus"></i> Add Category
+    </button>
+  <div id="admin_add_category_form">
+    <h4 class="display-5">Add Category</h4>
+    <form
+      action="/admin/category/add"
+      method="post"
+      name="add_category_form"
+    >
+      <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+      <div class="form-group">
+        <label for="Add_name">Category name:</label>
+        <input type="text" name="Add_name" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label for="Add_description">Description:</label>
+        <textarea
+          name="Add_description"
+          id="description"
+          cols="3"
+          class="form-control"
+          maxlength="250"
+          required
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+  </div>
+  <div id="admin_edit_category_form">
+    <h4 class="display-5">Edit Category</h4>
+    <form
+      action="/admin/category/edit"
+      method="post"
+      name="edit_category_form"
+    >
+    <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+      <div class="form-group">
+        <label for="Edit_name">Category name:</label>
+        <input type="hidden" name="Edit_name_hidden" value="" />
+        <input type="text" name="Edit_name" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label for="Edit_description">Description:</label>
+        <input type="hidden" name="Edit_description_hidden" value="" />
+        <textarea
+          name="Edit_description"
+          id="description"
+          cols="3"
+          class="form-control"
+          maxlength="250"
+          required
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Edit Category</button>
+    </form>
+  </div>
+  <div id="admin_delete_category_form">
+    <h4 class="display-5">Delete Category</h4>
+    <form
+      action="/admin/category/delete"
+      method="post"
+      name="delete_category_form"
+    >
+      <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+      <h1 class="display-4 bg-warning text-center text-white">
+        WARNING: ONCE DELETED A CATEGORY CANNOT BE RECOVERED
+      </h1>
+      <div class="form-group">
+        <label for="Delete_name">Category name:</label>
+        <input
+          type="text"
+          name="Delete_name"
+          class="form-control"
+          required
+          readonly
+        />
+      </div>
+      <div class="form-group">
+        <label for="Delete_description">Description:</label>
+        <textarea
+          name="Delete_description"
+          id="description"
+          cols="3"
+          class="form-control"
+          required
+          maxlength="250"
+          readonly
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-danger">Delete Category</button>
+    </form>
+  </div>
+</div>
+</div>
+<div class="col-lg-3"></div>
+</div>
+</div>
+<script>
+  let categoryNames = document.querySelectorAll(".category_name");
+  let categoryDesc = document.querySelectorAll(".category_desc");
+  let createForm = document.querySelector("#admin_add_category_form");
+  let editForm = document.querySelector("#admin_edit_category_form");
+  let deleteForm = document.querySelector("#admin_delete_category_form");
+  let editButtons = document.querySelectorAll(".edit_button");
+  let deleteButtons = document.querySelectorAll(".delete_button");
+  let createButton = document.querySelector("#Add_button");
+  let referenceNumber = null;
+  createForm.style.display = "none";
+  editForm.style.display = "none";
+  deleteForm.style.display = "none";
+  createButton.addEventListener("click", function () {
+    editForm.style.display = "none";
+    deleteForm.style.display = "none";
+    createForm.style.display = "block";
+  });
+  editButtons.forEach((item) => {
+    item.addEventListener("click", function () {
+      editForm.style.display = "block";
+      deleteForm.style.display = "none";
+      createForm.style.display = "none";
+      let buttonId = item.id;
+      window.scrollTo(0,document.body.scrollHeight);
+      switch (buttonId.length) {
+        // Covering up to 999 categories
+        case 14:
+          referenceNumber = buttonId.substr(12, 14);
+          break;
+        case 15:
+          referenceNumber = buttonId.substr(12, 15);
+          break;
+        default:
+          referenceNumber = buttonId.substr(12, 13);
+          break;
+      }
+      document.forms["edit_category_form"]["Edit_name"].value =
+        categoryNames[referenceNumber - 1].innerText;
+      document.forms["edit_category_form"]["Edit_description"].value =
+        categoryDesc[referenceNumber - 1].innerText;
+      document.forms["edit_category_form"]["Edit_description_hidden"].value =
+        categoryDesc[referenceNumber - 1].innerText;
+      document.forms["edit_category_form"]["Edit_name_hidden"].value =
+        categoryNames[referenceNumber - 1].innerText;
+    });
+  });
+  deleteButtons.forEach((item) => {
+    item.addEventListener("click", function () {
+      editForm.style.display = "none";
+      deleteForm.style.display = "block";
+      createForm.style.display = "none";
+      let buttonId = item.id;
+      window.scrollTo(0,document.body.scrollHeight);
+      switch (buttonId.length) {
+        // Covering up to 999 categories
+        case 16:
+          referenceNumber = buttonId.substr(14, 16);
+          break;
+        case 17:
+          referenceNumber = buttonId.substr(14, 17);
+          break;
+        default:
+          referenceNumber = buttonId.substr(14, 15);
+          break;
+      }
+      document.forms["delete_category_form"]["Delete_name"].value =
+        categoryNames[referenceNumber - 1].innerText;
+      document.forms["delete_category_form"]["Delete_description"].value =
+        categoryDesc[referenceNumber - 1].innerText;
+    });
+  });
+</script>

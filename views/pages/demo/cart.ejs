@@ -1,0 +1,128 @@
+  <div class="top_header cart_header">
+    <div class="header-left">
+      <img src="/images/layout/main_logo.png" alt="cyberCafeLogo" width="100" height="100" />
+    </div>
+    <div class="header-right">
+      <div class="header-right-links">
+        <a href="/demo/homepage" >Home</a>
+        <a href="/signup" class="sign-up-link-top">Sign-Up</a>
+        <a href="/login" class="log-in-link-top">Sign-In</a>
+        <a href="/demo/homepage/shop">Shop</a>
+        <a href="/demo/contact-us">Contact Us</a>
+        <a href="/logout" class="logout-link-top">Logout</a>
+        <a class="user-acount-link-top" href="/account"><i class="fa fa-user-circle" aria-hidden="true" title="Edit Account"></i></a>
+    <a href="/cart" class="cart-link-top"><i class="fa fa-shopping-cart" title="Show my cart"></i>
+          <% if (req.session.cart) { %>
+          <span class="badge badge-danger"><%= req.session.cart.totalQty %></span>
+          <% } %>
+    </a>
+    </div>
+  </div>
+  <div class="cart_header_text">
+    <h1>CART</h1>
+  </div>
+ </div>
+
+<div class="container">
+  <div class="row text-center">
+    <div class="col-lg-2"></div>
+    <div class="col-lg-8 text-center">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/demo/homepage/shop">Shop</a></li>
+        <li class="breadcrumb-item active">Cart</li>
+      </ol>    
+    <h2 class="cart">Cart Details</h2>
+  </div>
+  <div class="col-lg-2"></div>
+  </div>
+  <div class="row">
+    <div class="col-lg-2"></div>
+    <div class="col-lg-8">
+      <% if (items == 0 || items.totalQty == 0 ) { -%>
+       <div class="emptycart1">
+      <p class="emtycart">Sorry, you got no items in your cart</p>
+      <a class="emtycart"  a href="/demo/homepage/shop">Lets fix that!</a>
+       </div>
+      <% } else { -%>
+        
+      <table class="table table-warning table-hover table-bordered text-center" >
+        <thead class="cartthead">
+          <tr>
+            <th class="carttd">Item</th>
+            <th class="carttd">Quantity</th>
+            <th class="carttd">Price</th>
+            <th>Remove</th>
+          </tr>
+        </thead class="cartthead">
+        <tbody class="carttbody">
+          <%let totalPrice = 0%>
+          <% Object.keys(items).forEach( function(item) { %>
+          <tr>
+            <td class="carttd"><%= items[item].product.name %></td>
+            <td class="carttd">
+              <form action="/update-cart-item" method="post">
+                <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+                <label for="quantity">Quantity: </label>
+                <input type="number" name="quantity" value="<%= items[item].qty %>" step="1" min="1" max="20" style="width: 60px;">
+                <input
+                  type="hidden"
+                  name="productId"
+                  value="<%= items[item].product.id %>"
+                />
+                <button type="submit" class="btn btn-info">Update</button>
+              </form>
+            </td>
+            <td><%= items[item].product.price * items[item].qty%> £</td>
+            <% totalPrice += items[item].product.price * items[item].qty %>
+            <td><a href="/remove-item/<%= items[item].product.id %>">x</a></td>
+          </tr>
+          <% }) %>
+          <tr>
+            <td colspan="2">Total Price:</td>
+            <td><%=totalPrice%> £</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="mx-auto text-center">
+        <form action="/address" method="post"  >
+          <div class="form-group">
+            <input type="hidden" name="address_exists" value="<%= _csrf %>">
+            <label for="Add_address">Delivery Address:</label>
+            <input type="text" name="Add_address" class="form-control" required placeholder="Input the address you want your goods to be delivered here"/>
+          </div>
+          <div class="checkoutbtn">
+          <button type="submit" class="btn btn-success" >Checkout</button>
+          </div>
+          </form>
+    </div>
+
+      <% } -%>
+    </div>
+    <div class="col-lg-2"></div>
+  </div>
+ 
+</div>
+<script>
+      let layoutHeaderHome = document.querySelector('.header');
+    window.onscroll = function () {
+        scrollFunction();
+    };
+    function scrollFunction() {
+        if (
+            document.body.scrollTop > 480 ||
+            document.documentElement.scrollTop > 480
+        ) {
+            layoutHeaderHome.style.display = 'block';
+            layoutHeaderHome.classList.remove("animate__fadeOutUp")
+            layoutHeaderHome.classList.add("animate__fadeInDown")
+        } else {
+            layoutHeaderHome.style.display = 'none';
+            layoutHeaderHome.classList.add("animate__fadeOutUp")
+            layoutHeaderHome.classList.remove("animate__fadeInDown")
+        }
+    } 
+    
+</script> 
+
+

@@ -1,0 +1,352 @@
+<div class="container">
+  <div class="row">
+    <div class="alert alert-success">
+      <i class="fa fa-info-circle" aria-hidden="true"></i> <%= message %>
+    </div>
+  </div>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/admin/adminwelcome">Welcome</a></li>
+    <li class="breadcrumb-item active">Manage Coffees</li>
+  </ol>
+
+  <div class="container">
+    <table class="table table-dark table-hover table-bordered">
+      <thead>
+        <tr class="text-center">
+          <th>Name</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Image</th>
+          <th>Category</th>
+          <th>EDIT/DELETE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% let i = 0 %> <%products.forEach(function(product) { i++;%>
+        <tr class="text-center">
+          <td class="align-middle product_name" id="product_name_<%=i%>">
+            <%=product.name%>
+          </td>
+          <td class="align-middle product_desc" id="product_desc_<%=i%>">
+            <%=product.description%>
+          </td>
+          <td class="align-middle product_price" id="product_price_<%=i%>">
+            <%=product.price%>
+          </td>
+          <td class="align-middle product_image" id="product_image_<%=i%>">
+            <img src="<%=product.image%>" alt="coffe" height="100" width="186"> 
+            <%=product.image%>
+          </td>
+          <td class="align-middle product_categ" id="product_category_<%=i%>">
+            <%categories.forEach(function(category) { if(product.categoryID ===
+            category.id){%> <%=category.Name%> <%}})%>
+          </td>
+          <td>
+            <button
+              id="Edit_button_<%=i%>"
+              class="btn btn-primary btn-block edit_button"
+            >
+              <i class="fa fa-edit"></i> Edit</button
+            ><button
+              id="Delete_button_<%=i%>"
+              class="btn btn-danger btn-block delete_button"
+            >
+              <i class="fa fa-trash"></i> Delete
+            </button>
+          </td>
+        </tr>
+        <%})%>
+      </tbody>
+    </table>
+  </div>
+  <div class="container text-center m-auto">
+    <div class="row">
+      <div class="col-lg-3">
+      </div>
+      <div class="col-lg-6">
+    <button class="btn btn-success" id="Add_button">
+      <i class="fa fa-plus"></i> Add Coffee
+    </button>
+  <div id="admin_add_product_form" class="text-center m-auto">
+    <h4 class="display-5">Add Coffee</h4>
+    <form
+      action="/admin/product/add"
+      method="post"
+      name="add_product_form"
+    >
+      <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+      <div class="form-group">
+        <label for="Add_name">Product name:</label>
+        <input type="text" name="Add_name" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label for="Add_price">Price:</label>
+        <input
+          type="number"
+          name="Add_price"
+          class="form-control"
+          required
+          min="0.5"
+          max="100"
+          step="0.1"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="Add_category">Type</label>
+        <select class="form-control" name="Add_category">
+          <% categories.forEach(function(category) { %>
+          <option value="<%=category.Name%>"><%=category.Name%></option>
+          <%})%>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="Add_image">Image URL:</label>
+        <input type="text" name="Add_image" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label for="Add_description">Description:</label>
+        <textarea
+          name="Add_description"
+          id="description"
+          cols="3"
+          maxlength="500"
+          class="form-control"
+          required
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+  </div>
+  <div id="admin_edit_product_form" class="text-center m-auto">
+
+    <h4 class="display-5">Edit Coffee</h4>
+    <form
+      action="/admin/product/edit"
+      method="post"
+      name="edit_product_form"
+    >
+      <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+      <div class="form-group">
+        <label for="Edit_name">Product name:</label>
+        <input type="hidden" name="Edit_name_hidden" value="" />
+        <input type="text" name="Edit_name" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label for="Edit_price">Price:</label>
+        <input type="hidden" name="Edit_price_hidden" value="" />
+        <input
+          type="number"
+          name="Edit_price"
+          class="form-control"
+          required
+          min="0.5"
+          max="100"
+          step="0.1"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="Edit_category">Type</label>
+        <input type="hidden" name="Edit_category_hidden" value="" />
+        <select class="form-control" name="Edit_category">
+          <% categories.forEach(function(category) { %>
+          <option value="<%=category.Name%>"><%=category.Name%></option>
+          <%})%>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="Edit_image">Image URL:</label>
+        <input type="hidden" name="Edit_image_hidden" value="" />
+        <input type="text" name="Edit_image" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label for="Edit_description">Description:</label>
+        <input type="hidden" name="Edit_description_hidden" value="" />
+        <textarea
+          name="Edit_description"
+          id="description"
+          cols="3"
+          maxlength="500"
+          class="form-control"
+          required
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+  <div id="admin_delete_product_form" class="m-auto text-center">
+    <form
+      action="/admin/product/delete"
+      method="post"
+      name="delete_product_form"
+    >
+      <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+      <div class="form-group">
+        <label for="Delete_name">Product name:</label>
+        <input
+          type="text"
+          name="Delete_name"
+          class="form-control"
+          required
+          readonly
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="Delete_price">Price:</label>
+        <input
+          type="number"
+          name="Delete_price"
+          class="form-control"
+          required
+          readonly
+          min="0.5"
+          max="100"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="Delete_categry">Type</label>
+        <input type="hidden" name="Delete_category_hidden" value="" />
+        <select class="form-control" name="Delete_category" disabled>
+          <% categories.forEach(function(category) { %>
+          <option value="<%=category.Name%>"><%=category.Name%></option>
+          <%})%>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="Delete_image">Image URL:</label>
+        <input
+          type="text"
+          name="Delete_image"
+          class="form-control"
+          required
+          readonly
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="Delete_description">Description:</label>
+        <textarea
+          name="Delete_description"
+          id="description"
+          cols="3"
+          class="form-control"
+          maxlength="500"
+          required
+          readonly
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-danger">Submit</button>
+    </form>
+  </div>
+</div>
+</div>
+<div class="col-lg-3"></div>
+</div>
+</div>
+<script>
+  let productNames = document.querySelectorAll(".product_name");
+  let productDesc = document.querySelectorAll(".product_desc");
+  let productPrice = document.querySelectorAll(".product_price");
+  let productImage = document.querySelectorAll(".product_image");
+  let productCateg = document.querySelectorAll(".product_categ");
+  let createForm = document.querySelector("#admin_add_product_form");
+  let editForm = document.querySelector("#admin_edit_product_form");
+  let deleteForm = document.querySelector("#admin_delete_product_form");
+  let createButton = document.querySelector("#Add_button");
+  let editButtons = document.querySelectorAll(".edit_button");
+  let deleteButtons = document.querySelectorAll(".delete_button");
+  let referenceNumber = null;
+  createForm.style.display = "none";
+  editForm.style.display = "none";
+  deleteForm.style.display = "none";
+  createButton.addEventListener("click", function () {
+    editForm.style.display = "none";
+    deleteForm.style.display = "none";
+    createForm.style.display = "block";
+  });
+  editButtons.forEach((item) => {
+    item.addEventListener("click", function () {
+      editForm.style.display = "block";
+      deleteForm.style.display = "none";
+      createForm.style.display = "none";
+      let buttonId = item.id;
+      window.scrollTo(0,document.body.scrollHeight);
+      switch (buttonId.length) {
+        // Covering up to 999 categories
+        case 14:
+          referenceNumber = buttonId.substr(12, 14);
+          break;
+        case 15:
+          referenceNumber = buttonId.substr(12, 15);
+          break;
+        default:
+          referenceNumber = buttonId.substr(12, 13);
+          break;
+      }
+      document.forms["edit_product_form"]["Edit_name"].value =
+        productNames[referenceNumber - 1].innerText;
+      document.forms["edit_product_form"]["Edit_description"].value =
+        productDesc[referenceNumber - 1].innerText;
+      document.forms["edit_product_form"]["Edit_description_hidden"].value =
+        productDesc[referenceNumber - 1].innerText;
+      document.forms["edit_product_form"]["Edit_name_hidden"].value =
+        productNames[referenceNumber - 1].innerText;
+      document.forms["edit_product_form"]["Edit_price"].value =
+        productPrice[referenceNumber - 1].innerText;
+      document.forms["edit_product_form"]["Edit_price_hidden"].value =
+        productPrice[referenceNumber - 1].innerText;
+      document.forms["edit_product_form"]["Edit_category"].value =
+        productCateg[referenceNumber - 1].innerText;
+      document.forms["edit_product_form"]["Edit_category_hidden"].value =
+        productCateg[referenceNumber - 1].innerText;
+      document.forms["edit_product_form"]["Edit_image"].value =
+        productImage[referenceNumber - 1].innerText;
+      document.forms["edit_product_form"]["Edit_image_hidden"].value =
+        productImage[referenceNumber - 1].innerText;
+    });
+  });
+  deleteButtons.forEach((item) => {
+    item.addEventListener("click", function () {
+      editForm.style.display = "none";
+      deleteForm.style.display = "block";
+      createForm.style.display = "none";
+      let buttonId = item.id;
+      window.scrollTo(0,document.body.scrollHeight);
+      switch (buttonId.length) {
+        // Covering up to 999 categories
+        case 16:
+          referenceNumber = buttonId.substr(14, 16);
+          break;
+        case 17:
+          referenceNumber = buttonId.substr(14, 17);
+          break;
+        default:
+          referenceNumber = buttonId.substr(14, 15);
+          break;
+      }
+      document.forms["delete_product_form"]["Delete_name"].value =
+        productNames[referenceNumber - 1].innerText;
+      document.forms["delete_product_form"]["Delete_description"].value =
+        productDesc[referenceNumber - 1].innerText;
+      document.forms["delete_product_form"]["Delete_price"].value =
+        productPrice[referenceNumber - 1].innerText;
+      document.forms["delete_product_form"]["Delete_category"].value =
+        productCateg[referenceNumber - 1].innerText;
+      document.forms["delete_product_form"]["Delete_image"].value =
+        productImage[referenceNumber - 1].innerText;
+    });
+  });
+</script>

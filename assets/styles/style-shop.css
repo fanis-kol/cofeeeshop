@@ -1,0 +1,21 @@
+.e-shop_header {
+    background-image: url('/images/shop/shop.jpg');
+  }
+.e-shop_header_text {
+    text-align: center;
+    color: #FFA51E;
+    padding-top: 250px;
+}
+button:disabled {
+    cursor: not-allowed;
+    pointer-events: all !important;
+  }
+  #max_price{
+      width: 60px;
+  }
+  #min_price{
+      width: 60px;
+  }
+  .filter_button{
+      margin-bottom: 10px;
+  }

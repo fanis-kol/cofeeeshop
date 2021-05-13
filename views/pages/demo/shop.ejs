@@ -1,0 +1,247 @@
+  <div class="top_header e-shop_header">
+    <div class="header-left header-left-shop">
+      <img src="/images/layout/main_logo.png" alt="cyberCafeLogo" width="100" height="100" />
+    </div>
+    <div class="header-right">
+      <div class="header-right-links header-right-shop">
+        <a href="/demo/homepage">Home</a>
+        <a href="/signup" class="sign-up-link-top">Sign-Up</a>
+        <a href="/login" class="log-in-link-top">Sign-In</a>
+        <a href="/demo/homepage/shop">Shop</a>
+        <a href="/demo/contact-us">Contact Us</a>
+        <a href="/logout" class="logout-link-top">Logout</a>
+        <a class="user-acount-link-top" href="/account"><i class="fa fa-user-circle" aria-hidden="true" title="Edit Account"></i></a>
+    <a href="/cart" class="cart-link-top"><i class="fa fa-shopping-cart" title="Show my cart"></i>
+          <% if (req.session.cart) { %>
+          <span class="badge badge-danger"><%= req.session.cart.totalQty %></span>
+          <% } %>
+        </a>
+      </div>
+    </div>
+    <div class="e-shop_header_text">
+      <h1>ONLINE SHOP</h1>
+      <h2>DELIVERY TO YOUR PLACE</h2>
+    </div>
+  </div>
+  <div class="container-fluid pl-5 pt-5">
+    <div class="row">
+      <div class="alert alert-success">
+        <i class="fa fa-info-circle" aria-hidden="true"></i> <%= message %>
+      </div>
+    </div>
+    <div class="container-fluid">
+
+      <!-- Jumbotron Header -->
+      <header class="jumbotron my-4">
+        <h1 class="display-3">A Warm Welcome!</h1>
+        <p class="lead">Below are our button-filters if you wish to see coffees from specific countries. You can apply only one filter at a time. Also there is a price range filter.</p>
+          <%let pricesArray = [];%>
+          <% products.forEach(function(product){
+            pricesArray.push(product.price)
+          })%>
+          <% let maximumPrice = Math.max(...pricesArray);
+          let minimumPrice = Math.min(...pricesArray);
+          %>
+        <button class="btn btn-primary btn-md filter_button" id="all_filter" disabled = "disabled">Show All</button>
+        <button class="btn btn-primary btn-md filter_button" id="usa_filter">Show American (USA) Only &#127482;&#127480;</button>
+        <button class="btn btn-primary btn-md filter_button" id="greek_filter">Show Greek Only &#127468;&#127479;</button>
+        <button class="btn btn-primary btn-md filter_button" id="australian_filter">Show Australian Only &#127462;&#127482;</button>
+        <button class="btn btn-primary btn-md filter_button" id="austrian_filter">Show Austrian Only &#127462;&#127481;</button>
+        <button class="btn btn-primary btn-md filter_button" id="french_filter">Show French Only &#127467;&#127479;</button>
+        <button class="btn btn-primary btn-md filter_button" id="german_filter">Show German Only &#127465;&#127466;</button>
+        <button class="btn btn-primary btn-md filter_button" id="italian_filter">Show Italian Only &#127470;&#127481;</button>
+        <button class="btn btn-primary btn-md filter_button" id="spanish_filter">Show Spanish Only &#127466;&#127480;</button>
+        <br><br>
+        <label for="minimum_price">Min:</label>
+        <input type="number" min="<%=minimumPrice%>" max="<%=maximumPrice - 0.1%>" step="0.1" name="minimum_price" id="min_price" value="<%=minimumPrice%>">
+        <label for="maximum_price">Max:</label>
+        <input type="number" min="<%=minimumPrice + 0.1%>" max="<%=maximumPrice%>" step="0.1" name="maximum_price" id="max_price" value="<%=minimumPrice + 0.1%>">
+        <button class="btn btn-primary btn-lg" id="show_selected_prices_button">Show Selected Prices Only</button>
+      </header>
+
+      <!-- Page Features -->
+      <div class="row text-center">
+        <% let i = 0 %> <%products.forEach(function(product) { i++;%>
+        <div class=" col-lg-3 col-md-6 col-sm-12 mb-4 shop_card" id="shop_card_<%=i%>">
+          <div class="card h-100">
+            <img class="card-img-top" src="<%=product.image%>" alt="<%=product.name%> picture" id="shop_card_product_image_<%=i%>" height="440px">
+            <div class="card-body shop_card_product_name">
+              <h2 class="card-title shop_card_product_name" id="shop_card_product_name_<%=i%>"><%=product.name%></h2>
+              <h2 class="card-title shop_card_product_category" id="shop_card_product_category_<%=i%>"><%categories.forEach(function(category) { if(product.categoryID ===
+                category.id){%> <%=category.Name%> <%}})%></h2>
+                <h2 class="card-text bg-primary text-white shop_card_product_price" id="shop_card_product_price_<%=i%>">
+                  <%=product.price%> £
+                </h2>
+              <p class="card-text shop_card_product_desc" id="shop_card_product_desc_<%=i%>">Description: <%=product.description%></p>
+            </div>
+            <div class="card-footer">
+              <% if (req.session.cart && 'item'+product.id in req.session.cart.items) { %>
+              <form action="/update-cart-item" method="post">
+                <input type="hidden" name="_csrf" value="<%= _csrf %>">
+                <div class="form-group">
+                  <!-- <select name="quantity">
+                    <option value="<%= req.session.cart.items['item'+product.id].qty %>" selected>
+                      <%= req.session.cart.items['item'+product.id].qty %>
+                    </option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                  </select> -->
+                  <label for="quantity">Quantity: </label>
+                  <input type="number" name="quantity" value="<%= req.session.cart.items['item'+product.id].qty %>" step="1" min="1" max="20" style="width: 60px;">
+                  <input type="hidden" name="productId" value="<%= product.id %>">
+                </div>
+
+                <button type="submit" class="btn btn-success">Update</button>
+              </form>
+
+              <% } else { %>
+
+              <a href="/add-to-cart/<%= product.id %>" class="btn btn-primary">Add to cart</a>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <%})%>
+      <!-- /.row -->
+
+    </div>
+  </div>
+  </div>
+  <script>
+    let layoutHeaderHome = document.querySelector('.header');
+    window.onscroll = function () {
+        scrollFunction();
+    };
+    let shopProductNames = document.querySelectorAll(".shop_card_product_name");
+    let shopProductCategory = document.querySelectorAll(".shop_card_product_category");
+    let shopProductPrice = document.querySelectorAll(".shop_card_product_price");
+    let shopProductCard = document.querySelectorAll(".shop_card")
+    let allFiltersButtons = document.querySelectorAll(".filter_button")
+    let showAllFilterButton = document.querySelector("#all_filter");
+    let usaFilterButton = document.querySelector("#usa_filter");
+    let greekFilterButton = document.querySelector("#greek_filter");
+    let australianFilterButton = document.querySelector("#australian_filter");
+    let austrianFilterButton = document.querySelector("#austrian_filter");
+    let frenchFilterButton = document.querySelector("#french_filter");
+    let germanFilterButton = document.querySelector("#german_filter");
+    let italianFilterButton = document.querySelector("#italian_filter");
+    let spanishFilterButton = document.querySelector("#spanish_filter");
+    let maximumPriceInput = document.getElementById("max_price")
+    let minimumPriceInput = document.getElementById("min_price")
+    let priceButton = document.getElementById("show_selected_prices_button")
+    let minimumPricePresetValue = minimumPriceInput.value;
+    let maximumPriceMaxValue = maximumPriceInput.max;
+    function reenableRestOfButtons(params) {
+      allFiltersButtons.forEach(function(button){
+        if (button.id !== params) {
+        button.disabled = false;
+      }
+      })
+    }
+    async function showAllCards() {
+      shopProductCard.forEach(function (card) {
+        if (card.style.display === 'none'){
+        card.style.transition = 'opacity 1s'
+        setTimeout(() => {
+          card.style.opacity = '1'
+        }, 1000);
+        card.style.display = 'block';
+        }
+      })
+    }
+    async function hideRestOfCards(params) {
+      shopProductCategory.forEach(function (category) {
+        if (category.innerText !== params) {
+          setTimeout(() => {
+            category.parentElement.parentElement.parentElement.style.display = 'none';
+          }, 1000);
+          category.parentElement.parentElement.parentElement.style.transition = 'opacity 1s'
+          category.parentElement.parentElement.parentElement.style.opacity = '0'
+        }
+      })
+    }
+    showAllFilterButton.addEventListener("click", function(){
+      showAllCards()
+      showAllFilterButton.disabled = true
+      reenableRestOfButtons(showAllFilterButton.id)
+    })
+    usaFilterButton.addEventListener("click", function(){
+      showAllCards();
+      usaFilterButton.disabled = true
+      reenableRestOfButtons(usaFilterButton.id)
+      hideRestOfCards("American (USA)")
+    })
+    greekFilterButton.addEventListener("click", function(){
+      showAllCards();
+      greekFilterButton.disabled = true
+      reenableRestOfButtons(greekFilterButton.id)
+      hideRestOfCards("Greek")
+    })
+    australianFilterButton.addEventListener("click", function(){
+      showAllCards();
+      australianFilterButton.disabled = true
+      reenableRestOfButtons(australianFilterButton.id)
+      hideRestOfCards("Australian")
+    })
+    frenchFilterButton.addEventListener("click", function(){
+      showAllCards();
+      frenchFilterButton.disabled = true
+      reenableRestOfButtons(frenchFilterButton.id)
+      hideRestOfCards("French")
+    })
+    germanFilterButton.addEventListener("click", function(){
+      showAllCards();
+      germanFilterButton.disabled = true
+      reenableRestOfButtons(germanFilterButton.id)
+      hideRestOfCards("German")
+    })
+    italianFilterButton.addEventListener("click", function(){
+      showAllCards();
+      italianFilterButton.disabled = true
+      reenableRestOfButtons(italianFilterButton.id)
+      hideRestOfCards("Italian")
+    })
+    spanishFilterButton.addEventListener("click", function(){
+      showAllCards();
+      spanishFilterButton.disabled = true
+      reenableRestOfButtons(spanishFilterButton.id)
+      hideRestOfCards("Spanish")
+    })
+    austrianFilterButton.addEventListener("click", function(){
+      showAllCards();
+      austrianFilterButton.disabled = true
+      reenableRestOfButtons(austrianFilterButton.id)
+      hideRestOfCards("Austrian")
+    })
+    priceButton.addEventListener("click", function(){
+      if (maximumPriceInput.value > minimumPriceInput.value) {
+        // showAllCards();
+        showAllFilterButton.disabled = false
+        shopProductPrice.forEach(function(price){
+        let priceWithoutEuroSymbol = price.innerText.slice(0, -2);
+        if ((priceWithoutEuroSymbol>=minimumPriceInput.value) && (priceWithoutEuroSymbol<= maximumPriceInput.value)) {
+          price.parentElement.parentElement.parentElement.style.display = 'block';
+        }else{
+          price.parentElement.parentElement.parentElement.style.display = 'none';
+        }
+        })
+      }else{
+        minimumPriceInput.value = minimumPricePresetValue;
+        maximumPriceInput.value = parseInt(minimumPricePresetValue) + 0.1;
+        alert("Minimum price needs to be smaller than maximum price.")
+      }
+  })
+  minimumPriceInput.addEventListener("change", function(){
+    if (maximumPriceInput.value <= minimumPriceInput.value) {
+      minimumPriceInput.value = minimumPricePresetValue;
+      alert("Minimum price needs to be smaller than maximum price.")
+    }
+  })
+  maximumPriceInput.addEventListener("change", function(){
+    if (maximumPriceInput.value <= minimumPriceInput.value) {
+        maximumPriceInput.value = maximumPriceMaxValue;
+      alert("Minimum price needs to be smaller than maximum price.")
+    }
+  })
+  </script>
+  

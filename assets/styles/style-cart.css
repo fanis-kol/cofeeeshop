@@ -1,0 +1,31 @@
+.cart {
+  padding-left: 12px;
+  padding-top:100px;
+}
+
+.emtycart {
+  padding-left: 12px;
+  font-size: 30px;
+  color: #FFA51E;
+}
+.emptycart1{
+  padding-bottom: 150px;
+  padding-top: 120px;
+
+
+}
+
+.cart_header {
+  background-image: url('/images/Cart/main_cashier.jpg');
+}
+
+.cart_header_text {
+  text-align: center;
+  color: #FFA51E;
+  padding-top: 250px;
+}
+
+
+.checkoutbtn {
+  padding-bottom:150px;
+}

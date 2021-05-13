@@ -1,0 +1,137 @@
+<div class="container">
+  <div class="row">
+    <div class="alert alert-success">
+      <i class="fa fa-info-circle" aria-hidden="true"></i> <%= message %>
+    </div>
+  </div>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/admin/adminwelcome">Welcome</a></li>
+    <li class="breadcrumb-item active">Manage Orders</li>
+  </ol>
+  <div class="container">
+    <table class="table table-dark table-hover table-bordered">
+      <thead>
+        <tr class="text-center">
+            <th>ID</th>
+          <th>Customer Full Name</th>
+          <th>Ordered At</th>
+          <th>Date of Payment</th>
+          <th>Is It Paid?</th>
+          <th>Coffees</th>
+          <th>Shipping Address</th>
+          <th>Total Price</th>
+          <th>Delete Button</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%let totalEarnings = 0;%>
+        <% let i = 0 %> <%orders.forEach(function(order) { i++;
+                    users.forEach(function(user){
+                        if(order.userID === user.id){%>
+        <tr class="text-center">
+            <td class="align-middle order-id" id="order_id_<%=i%>">
+                <%=order.id%>
+            </td>
+          <td class="align-middle order-full_name" id="order_full_name_<%=i%>">
+            <%=user.fullName%>
+          </td>
+          <%}})
+                    let listOfCofeesPerOrder = [];
+                    let listOfQuantities = [];
+                    ordersDetails.forEach(function (detail){
+                      if(detail.ordersID === order.id){
+                        listOfQuantities.push(detail.quantity)
+                        products.forEach(function (product){
+                          if(detail.coffeeID === product.id){
+                            listOfCofeesPerOrder.push(product.name)
+                          }
+                        })
+                      }
+                    })
+                  %>
+          <td class="align-middle order-date" id="order_date_<%=i%>">
+            <% let original = new Date(order.createdAt)%>
+            <% let convertDate = original.toUTCString()%>
+            <%=convertDate%>
+          </td>
+          <td class="align-middle order_date_payment" id="order_date_payment_<%=i%>">
+            <% let original2 = new Date(order.DateOfPayment)%>
+            <% let convertDate2 = original2.toUTCString()
+                    if (convertDate2 === "Invalid Date"){%>
+            ---
+            <%}else{
+                    %>
+            <%=convertDate2%>
+            <%}%>
+                  </td>
+                  <td class="align-middle order_is_paid" id="order_is_paid_<%=i%>">
+            <%if (order.isPaid === false){%>
+            No
+            <%}else{
+                    %>
+            Yes
+            <%}%>
+                  </td>
+                  <td class="align-middle order_coffees" id="order_coffees_<%=i%>">
+            <% let y = 0;
+                    listOfCofeesPerOrder.forEach(function(coffee){%>
+            <%=coffee + " Qty:" + listOfQuantities[y] + ","%><%y++%> <br>
+            <%})%>
+          </td>
+          <td class="align-middle order_shipping_address" id="order_shipping_address_<%=i%>">
+            <%=order.address%>
+          </td>
+          <td class="align-middle order_total_price" id="order_total_price_<%=i%>">
+            <%=order.totalPrice + " £"%>
+            <%totalEarnings += order.totalPrice%>
+          </td>
+          <td>
+            <button
+            id="Delete_button_<%=i%>"
+            class="btn btn-danger btn-block delete_button"
+            style="height: 100%;"
+          >
+            <i class="fa fa-trash"></i> Delete
+          </button>
+          </td>
+        </tr>
+        <%})%>
+      </tbody>
+    </table>
+  </div>
+  <div id="admin_delete_order_form" class="container text-center m-auto">
+    <h1>Are you absolutely sure you want to delete this order? If so click on the delete order button below</h1>
+  <form action="/admin/order/delete" method="post">
+    <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+    <input type="hidden" name="hidden_id" id="hidden_id" value="">
+    <button type="submit" class="btn btn-danger" id="form_delete_button">Delete Order</button>
+  </form>
+  </div>
+<script>
+    let idnumber = document.querySelectorAll(".order-id");
+    let deleteForm = document.getElementById("admin_delete_order_form")
+    let deleteButtons = document.querySelectorAll(".delete_button");
+    let hiddenInput = document.getElementById("hidden_id");
+    let referenceNumber = null;
+    deleteForm.style.display = "none";
+
+    deleteButtons.forEach(function(item){
+        item.addEventListener("click", function () {
+          window.scrollTo(0,document.body.scrollHeight);
+        deleteForm.style.display = "block";
+        let buttonId = item.id;
+      switch (buttonId.length) {
+        // Covering up to 999 categories
+        case 16:
+          referenceNumber = buttonId.substr(12, 14);
+          break;
+        case 17:
+          referenceNumber = buttonId.substr(12, 15);
+          break;
+        default:
+          referenceNumber = buttonId.substr(14, 15);
+          break;
+      }
+      hiddenInput.value = idnumber[referenceNumber - 1].innerText;
+    })})
+</script>

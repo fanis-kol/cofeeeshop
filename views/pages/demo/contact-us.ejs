@@ -1,0 +1,160 @@
+  <div class="top_header contact_header">
+    <div class="header-left">
+      <img src="/images/layout/main_logo.png" alt="cyberCafeLogo" width="100" height="100" />
+    </div>
+    <div class="header-right">
+      <div class="header-right-links">
+        <a href="/demo/homepage">Home</a>
+        <a href="/signup" class="sign-up-link-top">Sign-Up</a>
+        <a href="/login" class="log-in-link-top">Sign-In</a>
+        <a href="/demo/homepage/shop">Shop</a>
+        <a href="/demo/contact-us">Contact Us</a>
+        <a href="/logout" class="logout-link-top">Logout</a>
+        <a class="user-acount-link-top" href="/account"><i class="fa fa-user-circle" aria-hidden="true" title="Edit Account"></i></a>
+    <a href="/cart" class="cart-link-top"><i class="fa fa-shopping-cart" title="Show my cart"></i>
+          <% if (req.session.cart) { %>
+          <span class="badge badge-danger"><%= req.session.cart.totalQty %></span>
+          <% } %>
+        </a>
+      </div>
+    </div>
+    <div class="contact_header_text">
+      <h1>CONTACT US</h1>
+    </div>
+  </div>
+  <div class="container-fluid main-cont-contact">
+    <div class="row">
+      <div class="col-lg-4 mx-auto text-center">
+        <h2>Get in touch with us</h2>
+        <p>We will always be happy to help tou wether its for an order, or you want to reserve a table, or you have a sugestion to make. Below are some of the ways you can reach us</p>
+        <ul>
+          <li><i class="fa fa-phone" aria-hidden="true"></i> Telephone: (0161) 256 0138.</li>
+          <li><i class="fa fa-mobile" aria-hidden="true"></i> Mobile: 44 8424 3215</li>
+          <li><i class="fa fa-envelope" aria-hidden="true"></i> Email: Coffeebrand@outlook.com</li>
+          <li><i class="fa fa-fax" aria-hidden="true"></i> Fax:(0161) 256 0150.</li>
+          <li><i class="fa fa-map-marker" aria-hidden="true"></i> Address:Sir Matt Busby Way, Old Trafford, Stretford Manchester M16 0RA, United Kingdom</li>
+        </ul>
+        <p>
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank"><i class="fa fa-facebook-official fa-4x" aria-hidden="true"></i></a>
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank"><i class="fa fa-twitter-square fa-4x" aria-hidden="true"></i></a>
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank"><i class="fa fa-tumblr-square fa-4x" aria-hidden="true"></i></a>
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank"><i class="fa fa-instagram fa-4x" aria-hidden="true"></i></a>
+        </p>
+      </div>
+      <div class="col-lg-4 mx-auto" id="contact-us" v-cloak>
+            <div style="max-width:  650px;" class="mx-auto" v-if="!cloudSuccess">
+              <p class="text-center">Have a question for us?  Maybe some feedback?  We love talking to users about RETROBRAND, and we're happy to answer questions. Send us a note and we'll get back to you as soon as possible.</p>
+              <hr/>
+              <ajax-form action="deliverContactFormMessage" :form-errors.sync="formErrors" :form-data="formData" :form-rules="formRules" :syncing.sync="syncing" :cloud-error.sync="cloudError" @submitted="submittedForm()">
+                <div class="form-group">
+                  <label for="full-name">Full Name:</label>
+                  <input class="form-control" id="full-name" name="full-name" type="text"  :class="[formErrors.fullName ? 'is-invalid' : '']" v-model.trim="formData.fullName" placeholder="Input Your Full Name Here" autocomplete="name" focus-first>
+                  <div class="invalid-feedback" v-if="formErrors.fullName">Please let us know what to call you.</div>
+                </div>
+                <div class="form-group">
+                  <label for="email-address">Email Address:</label>
+                  <input class="form-control" id="email-address" name="email-address" type="email"  :class="[formErrors.emailAddress ? 'is-invalid' : '']" v-model.trim="formData.emailAddress" placeholder="Input Your Email Here" autocomplete="email">
+                  <div class="invalid-feedback" v-if="formErrors.emailAddress">Please enter a valid email address.</div>
+                </div>
+                <div class="form-group">
+                  <label for="topic">Topic:</label>
+                  <input class="form-control" id="topic" name="topic" type="text"  :class="[formErrors.topic ? 'is-invalid' : '']" v-model.trim="formData.topic" placeholder="Input The Topic Of Your Qusestion Here" autocomplete="none">
+                  <div class="invalid-feedback" v-if="formErrors.topic">Please choose a topic for your message.</div>
+                </div>
+                <div class="form-group">
+                  <label for="message">Message:</label>
+                  <textarea class="form-control" id="message" name="message" :class="[formErrors.message ? 'is-invalid' : '']" v-model.trim="formData.message" placeholder="Input Your Main Body Text Here" autocomplete="none"></textarea>
+                  <div class="invalid-feedback" v-if="formErrors.message">Message cannot be empty.</div>
+                </div>
+                <cloud-error v-if="cloudError"></cloud-error>
+                <div class="form-group">
+                  <ajax-button type="submit" :syncing="syncing" class="btn btn-primary btn-lg btn-block">Send this message to us</ajax-button>
+                </div>
+              </ajax-form>
+            </div>
+            <div style="max-width: 450px;" class="mx-auto text-center" v-else>
+              <p class="text-center">Thanks for reaching out!</p>
+              <hr/>
+              <p>We have received your message, and someone from our team will get back to you soon.</p>
+            </div>
+                </div>
+                <%- /* Expose locals as `window.SAILS_LOCALS` :: */ exposeLocalsToBrowser() %>
+      <div class="col-lg-4 mx-auto text-center">
+        <h2>Our open Working Hours</h2>
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Day of Week</th>
+              <th>Open Hours</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Monday</td>
+              <td>06:25 - 19:45</td>
+            </tr>
+            <tr>
+              <td>Tuesday</td>
+              <td>06:25 - 19:45</td>
+            </tr>
+            <tr>
+              <td>Wednsday</td>
+              <td>06:25 - 19:45</td>
+            </tr>
+            <tr>
+              <td>Thursday</td>
+              <td>06:25 - 19:45</td>
+            </tr>
+            <tr>
+              <td>Friday</td>
+              <td>06:25 - 19:45</td>
+            </tr>
+            <tr>
+              <td>Saturday</td>
+              <td>06:25 - 19:45</td>
+            </tr>
+            <tr>
+              <td>Sunday</td>
+              <td>08:25 - 18:00</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <br>
+    <dir class="row">
+      <div class="col-lg-6 mx-auto">
+        <div class="mapouter" style="width: 100%;">
+          <div class="gmap_canvas"><iframe width="100%" height="500" id="gmap_canvas"
+              src="https://maps.google.com/maps?q=old%20traford&t=k&z=17&ie=UTF8&iwloc=&output=embed" frameborder="0"
+              scrolling="no" marginheight="0" marginwidth="0"></iframe><a href="https://putlocker-is.org"></a><br>
+            <style>
+              .mapouter {
+                position: relative;
+                text-align: right;
+                height: 500px;
+                width: 100%;
+              }
+
+            </style><a href="https://www.embedgooglemap.net">google maps plugin html</a>
+            <style>
+              .gmap_canvas {
+                overflow: hidden;
+                background: none !important;
+                height: 500px;
+                width: 100%;
+              }
+
+            </style>
+          </div>
+        </div>
+      </div>
+    </dir>
+  </div>
+      <script>
+            let layoutHeaderHome = document.querySelector('.header');
+    window.onscroll = function () {
+        scrollFunction();
+    };
+      </script>

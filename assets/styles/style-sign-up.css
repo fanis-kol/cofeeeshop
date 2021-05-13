@@ -1,0 +1,8 @@
+.signup_header {
+    background-image: url('/images/Sign_up/sign_up_main.jpg');
+  }
+.signup_header_text {
+    text-align: center;
+    color: #FFA51E;
+    padding-top: 250px;
+}

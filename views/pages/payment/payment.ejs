@@ -1,0 +1,148 @@
+<script src="https://js.stripe.com/v3/"></script>
+
+  <div class="top_header cart_header">
+    <div class="header-left ">
+      <img src="/images/layout/main_logo.png" alt="cyberCafeLogo" width="100" height="100" />
+    </div>
+  <div class="header-right">
+    <div class="header-right-links">
+      <a href="/demo/homepage" >Home</a>
+      <a href="/signup" class="sign-up-link-top">Sign-Up</a>
+      <a href="/login" class="log-in-link-top">Sign-In</a>
+      <a href="/demo/homepage/shop">Shop</a>
+      <a href="/demo/contact-us">Contact Us</a>
+      <a href="/logout" class="logout-link-top">Logout</a>
+      <a class="user-acount-link-top" href="/account"><i class="fa fa-user-circle" aria-hidden="true" title="Edit Account"></i></a>
+  <a href="/cart" class="cart-link-top"><i class="fa fa-shopping-cart" title="Show my cart"></i>
+      <% if (req.session.cart) { %>
+        <span class="badge badge-danger"><%= req.session.cart.totalQty %></span>
+        <% } %>
+  </a>
+  </div>
+</div>
+<div class="cart_header_text">
+  <h1>PAYMENT</h1>
+</div>
+</div>
+
+
+
+<div class="container" style="margin-bottom: 40px; margin-top: 20px;">
+  <div class="row">
+    <div class="col-lg-12 m-auto text-center">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/demo/homepage/shop">Shop</a></li>
+        <li class="breadcrumb-item"><a href="/cart">Cart</a></li>
+        <li class="breadcrumb-item active">Payment</li>
+      </ol>    
+      <h1>Your Order will be delivered to <%= address %>.</h1>
+      <h2>Below is a table with your final order. Please Select wether you want to pay with cash or with you credit card. In case of the later you will be redirected to Stripe Payment Service so you can input your credit card.</h2>
+    </div>
+  </div>
+</div>
+<div class="container" style="margin-bottom: 150px;">
+  <div class="row">
+    <div class="col-lg-6 mx-auto text-center">
+      <% if (items == 0 || items.totalQty == 0 ) { -%>
+
+      <p class="emtycart">Sorry, you got no items in your cart</p>
+      <a class="emtycart" a href="/demo/homepage/shop">Lets fix that!</a>
+      <% } else { -%>
+        
+      <table class="table table-warning table-hover table-bordered text-center" >
+        <thead class="cartthead">
+          <tr>
+            <th class="carttd">Item</th>
+            <th class="carttd">Quantity</th>
+            <th class="carttd">Total Price</th>
+          </tr>
+        </thead class="cartthead">
+        <tbody class="carttbody">
+          <%let totalPrice = 0%>
+          <% Object.keys(items).forEach( function(item) { %>
+          <tr>
+            <td class="carttd"><%= items[item].product.name %></td>
+            <td class="carttd">
+                <%= items[item].qty %> piece
+            </td>
+            <td><%= items[item].product.price * items[item].qty%> £</td>
+            <% totalPrice += items[item].product.price * items[item].qty %>
+          </tr>
+          <% }) %>
+          <tr>
+            <td colspan="2">Total Price:</td>
+            <td><%=totalPrice%> £</td>
+          </tr>
+        </tbody>
+      </table>
+      <% } -%>
+    </div>
+  
+  <div class="col-lg-6 mx-auto text-center">
+    <h3>Select Your desired payment Method and click on Checkout.</h3>
+    <input type="radio" id="cash" name="paymentMethod" value="true" onclick="cashOrcredit()">
+    <label for="cash">Cash  <i class="fa fa-money fa-2x" aria-hidden="true"></i></label><br>
+    <input type="radio" id="credit" name="paymentMethod" value="false" onclick="cashOrcredit()" checked>
+    <label for="credit">Credit Card  <i class="fa fa-credit-card fa-2x" aria-hidden="true"></i></label><br>
+    <button class="btn btn-success" id="checkout-button" >Checkout</button>
+    <form action="/success" method="GET">
+    <button class="btn btn-success" id="cashButton" style="display : none" >Checkout</button>
+  </form>
+  </div>
+
+</div>
+</div>
+
+<!-- Add an event handler to the checkout button -->
+
+<script type="text/javascript">
+
+  // Create an instance of the Stripe object with your publishable API key
+  var stripe = Stripe('pk_test_51IcCKmB8QCrXCSB3nhNN2XaLL1natqhRSAL41ghmwSZAz7YNCtdq2MlSEaoYXfWhiqQHpb1brKPUl6irsl9zH6QO00U8WqMI1u');
+  var checkoutButton = document.getElementById('checkout-button');
+
+  
+  function cashOrcredit() {
+    if (document.getElementById('credit').checked) {
+        document.getElementById('checkout-button').style.display = 'inline';
+        document.getElementById('cashButton').style.display = 'none';
+    } else {
+      if(document.getElementById('cash').checked){
+        document.getElementById('checkout-button').style.display = 'none';
+        document.getElementById('cashButton').style.display = 'inline';
+      }
+
+    }
+  }
+
+  // if user chooses credit go to checkout action
+  checkoutButton.addEventListener('click', function() {
+    // Create a new Checkout Session using the server-side endpoint you
+    // created in step 3.
+    fetch('/create-checkout-session', {
+      method: 'POST',
+    })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(session) {
+      return stripe.redirectToCheckout({ sessionId: session.id });
+    })
+    .then(function(result) {
+      // If `redirectToCheckout` fails due to a browser or network
+      // error, you should display the localized error message to your
+      // customer using `error.message`.
+      if (result.error) {
+        alert(result.error.message);
+      }
+    })
+    .catch(function(error) {
+      console.error('Error:', error);
+    });
+  });
+</script>
+
+
+
+
+

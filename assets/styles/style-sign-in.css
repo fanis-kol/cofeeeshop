@@ -1,0 +1,8 @@
+.signin_header {
+    background-image: url('/images/Sign_in/sign_in_main.jpg');
+  }
+.signin_header_text {
+    text-align: center;
+    color: #FFA51E;
+    padding-top: 250px;
+}

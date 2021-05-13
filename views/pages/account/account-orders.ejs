@@ -1,0 +1,100 @@
+    <div class="top_header account_header">
+      <div class="header-left">
+        <img src="/images/layout/main_logo.png" alt="cyberCafeLogo" width="100" height="100" />
+      </div>
+      <div class="header-right">
+        <div class="header-right-links">
+          <a href="/demo/homepage" >Home</a>
+          <a href="/signup" class="sign-up-link-top">Sign-Up</a>
+          <a href="/login" class="log-in-link-top">Sign-In</a>
+          <a href="/demo/homepage/shop">Shop</a>
+          <a href="/demo/contact-us">Contact Us</a>
+          <a href="/logout" class="logout-link-top">Logout</a>
+          <a class="user-acount-link-top" href="/account"><i class="fa fa-user-circle" aria-hidden="true" title="Edit Account"></i></a>
+      <a href="/cart" class="cart-link-top"><i class="fa fa-shopping-cart" title="Show my cart"></i>
+                <% if (req.session.cart) { %>
+            <span class="badge badge-danger"><%= req.session.cart.totalQty %></span>
+            <% } %>
+      </a>
+      </div>
+    </div>
+    <div class="account_header_text">
+      <h1>ACCOUNT ORDERS</h1>
+    </div>    
+   </div>
+  <div class="container" style="margin-top: 100px;">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/account">Account Overview</a></li>
+      <li class="breadcrumb-item active">Order History</li>
+    </ol>      
+    <h1>Orders History</h1>
+    <table class="table table-warning table-hover table-bordered">
+      <thead>
+        <tr class="text-center">
+          <th>Ordered At</th>
+          <th>Date of Payment</th>
+          <th>Is It Paid?</th>
+          <th>Coffees</th>
+          <th>Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% let i = 0 %> <%orders.forEach(function(order) { i++;
+          if (order.userID === connectedUserId & order.isPaid){
+            let listOfCofeesPerOrder = [];
+            let listOfQuantities = [];
+            ordersDetails.forEach(function (detail){
+              if(detail.ordersID === order.id){
+                listOfQuantities.push(detail.quantity)
+                products.forEach(function (product){
+                  if(detail.coffeeID === product.id){
+                    listOfCofeesPerOrder.push(product.name)
+                  }
+                })
+              }
+            })
+          %>
+        <tr class="text-center">
+          <td class="align-middle order-date" id="order_date_<%=i%>">
+            <% let original = new Date(order.createdAt)%>
+            <% let convertDate = original.toUTCString()%>
+            <%=convertDate%>
+          </td>
+          <td class="align-middle order_date_payment" id="order_date_payment_<%=i%>">
+            <% let original2 = new Date(order.DateOfPayment)%>
+            <% let convertDate2 = original2.toUTCString()
+            if (convertDate2 === "Invalid Date"){%>
+              ---
+            <%}else{
+            %>
+            <%=convertDate2%>
+            <%}%>
+          </td>
+          <td class="align-middle order_is_paid" id="order_is_paid_<%=i%>">
+            <%if (order.isPaid === false){%>
+              No
+            <%}else{
+            %>
+            Yes
+            <%}%>
+          </td>
+          <td class="align-middle order_coffees" id="order_coffees_<%=i%>">
+            <%let y = 0%>
+            <%listOfCofeesPerOrder.forEach(function(coffee){%>
+              <%=coffee + " Qty:" + listOfQuantities[y] + ","%><%y++%> <br>
+              <%})%>
+          </td>
+          <td class="align-middle order_total_price" id="order_total_price_<%=i%>">
+            <%=order.totalPrice + " £"%>
+          </td>
+        </tr>
+        <%}})%>
+      </tbody>
+    </table>
+  </div>
+  <script>
+    let layoutHeaderHome = document.querySelector('.header');
+  window.onscroll = function () {
+      scrollFunction();
+  };
+  </script> 

@@ -1,0 +1,15 @@
+
+.account_header {
+    height: 350px;
+    background-image: url('/images/Account/main_account_pic.jpg');
+  }
+
+.account_header_text {
+    text-align: center;
+    color: #FFA51E;
+    padding-top: 250px;
+}
+
+  .main-cont-account{
+      margin-top: 100px;
+  }

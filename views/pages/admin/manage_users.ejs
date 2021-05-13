@@ -1,0 +1,334 @@
+<div class="container">
+  <div class="row">
+    <div class="alert alert-success">
+      <i class="fa fa-info-circle" aria-hidden="true"></i> <%= message %>
+    </div>
+  </div>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/admin/adminwelcome">Welcome</a></li>
+    <li class="breadcrumb-item active">Manage Users</li>
+  </ol>
+
+  <div class="container">
+    <table class="table table-dark table-hover table-bordered">
+      <thead>
+        <tr class="text-center">
+          <th>Full Name</th>
+          <th>E-Mail</th>
+          <th>Email Status</th>
+          <th>Admin</th>
+          <th>Customer</th>
+          <th>Billing Card</th>
+          <th>EDIT/DELETE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% let i = 0 %> <%users.forEach(function(user) { i++;%>
+        <tr class="text-center">
+          <td class="align-middle user_name" id="user_name_<%=i%>">
+            <%=user.fullName%>
+          </td>
+          <td
+            class="align-middle user_emailAddress"
+            id="user_emailAddress_<%=i%>"
+          >
+            <%=user.emailAddress%>
+          </td>
+          <td
+            class="align-middle user_emailStatus"
+            id="user_emailStatus_<%=i%>"
+          >
+            <%=user.emailStatus%>
+          </td>
+          <td class="align-middle user_admin" id="user_admin_<%=i%>">
+            <%=user.isSuperAdmin%>
+          </td>
+          <td class="align-middle user_customer" id="user_customer_<%=i%>">
+            <%=user.isCustomer%>
+          </td>
+          <td
+            class="align-middle user_billingCard"
+            id="user_billingCard_<%=i%>"
+          >
+            <%=user.hasBillingCard%>
+          </td>
+          <td>
+            <button
+              id="Edit_button_<%=i%>"
+              class="btn btn-primary btn-block edit_button"
+            >
+              <i class="fa fa-edit"></i> Edit</button
+            ><button
+              id="Delete_button_<%=i%>"
+              class="btn btn-danger btn-block delete_button"
+            >
+              <i class="fa fa-trash"></i> Delete
+            </button>
+          </td>
+        </tr>
+        <%})%>
+      </tbody>
+    </table>
+  </div>
+  <div class="container text-center m-auto">
+    <div class="row">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+  <div id="admin_add_user_form">
+    <h4 class="display-5">Add User</h4>
+    <form
+      action="/admin/user/add"
+      method="post"
+      name="add_user_form"
+    >
+      <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+      <div class="form-group">
+        <label for="Add_fullname">User Fullname:</label>
+        <input type="text" name="Add_fullname" class="form-control" required />
+      </div>
+      <div class="form-group">
+        <label for="Add_password">Password:</label>
+        <input
+          type="password"
+          minlength="4"
+          maxlength="10"
+          name="Add_password"
+          class="form-control"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="Add_email">User E-mail:</label>
+        <input type="email" name="Add_email" class="form-control" required />
+      </div>
+      <div class="form-group">
+        <input
+          type="checkbox"
+          name="Add_admin"
+          class="form-control"
+          value="1"
+        />
+        <label for="Add_admin"> Account is Super Admin</label>
+      </div>
+      <div class="form-group">
+        <input
+          type="checkbox"
+          name="Add_customer"
+          class="form-control"
+          value="1"
+        />
+        <label for="Add_customer"> Account is Customer</label>
+      </div>
+      <div class="form-group">
+        <input
+          type="checkbox"
+          name="Add_billing_card"
+          class="form-control"
+          value="1"
+        />
+        <label for="Add_billing_card"> Account has Billing Card</label>
+      </div>
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+  </div>
+  <div id="admin_edit_user_form">
+    <h4 class="display-5">Edit User</h4>
+    <form
+      action="/admin/user/edit"
+      method="post"
+      name="edit_user_form"
+    >
+      <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+      <div class="form-group">
+        <label for="Edit_fullname">User Fullname:</label>
+        <input type="hidden" name="Edit_fullname_hidden" value="" />
+        <input type="text" name="Edit_fullname" class="form-control" required />
+      </div>
+      <div class="form-group">
+        <label for="Edit_email">User E-mail:</label>
+        <input type="hidden" name="Edit_email_hidden" value="" />
+        <input type="email" name="Edit_email" class="form-control" required />
+      </div>
+      <div class="form-group">
+        <input type="hidden" name="Edit_admin_hidden" value="" />
+        <input type="hidden" name="Edit_customer_hidden" value="" />
+        <input type="hidden" name="Edit_billing_card_hidden" value="" />
+        <input type="checkbox" id="Edit_admin" name="Edit_admin" value="">
+        <label for="Edit_admin"> Account is Super Admin</label><br>
+        <input type="checkbox" id="Edit_customer" name="Edit_customer" value="">
+        <label for="Edit_customer"> Account is Customer</label><br>
+        <input type="checkbox" id="Edit_billing_card" name="Edit_billing_card" value="">
+        <label for="Edit_billing_card"> Account has Billing Card</label><br><br>
+      </div>
+      <button type="submit" class="btn btn-primary">Edit user</button>
+    </form>
+  </div>
+  <div id="admin_delete_user_form" class="container">
+    <h4 class="display-5">Delete user</h4>
+    <form
+      action="/admin/user/delete"
+      method="post"
+      name="delete_user_form"
+    >
+      <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+      <h1 class="display-4 bg-warning text-center text-white">
+        WARNING: ONCE DELETED A USER CANNOT BE RECOVERED
+      </h1>
+      <div class="form-group">
+        <label for="Delete_fullname">User Fullname:</label>
+        <input
+          type="text"
+          name="Delete_fullname"
+          class="form-control"
+          required
+          readonly
+        />
+      </div>
+      <div class="form-group">
+        <label for="Delete_email">User E-mail:</label>
+        <input
+          type="email"
+          name="Delete_email"
+          class="form-control"
+          required
+          readonly
+        />
+      </div>
+      <input type="hidden" name="Delete_admin_hidden" value="" />
+      <input type="hidden" name="Delete_customer_hidden" value="" />
+      <input type="hidden" name="Delete_billing_card_hidden" value="" />
+      <button type="submit" class="btn btn-danger">Delete User</button>
+    </form>
+  </div>
+</div>
+<div class="col-lg-3"></div>
+</div>
+</div>
+</div>
+<script>
+  let userNames = document.querySelectorAll(".user_name");
+  let userEmail = document.querySelectorAll(".user_emailAddress");
+  let userSuperAdmin = document.querySelectorAll(".user_admin");
+  let userCustomer = document.querySelectorAll(".user_customer");
+  let userBillingCard = document.querySelectorAll(".user_billingCard");
+  let createForm = document.querySelector("#admin_add_user_form");
+  let editForm = document.querySelector("#admin_edit_user_form");
+  let deleteForm = document.querySelector("#admin_delete_user_form");
+  let editButtons = document.querySelectorAll(".edit_button");
+  let deleteButtons = document.querySelectorAll(".delete_button");
+  let adminButton = document.forms["edit_user_form"]["Edit_admin"];
+  let customerButton = document.forms["edit_user_form"]["Edit_customer"];
+  let billingCard = document.forms["edit_user_form"]["Edit_billing_card"];
+  let referenceNumber = null;
+  createForm.style.display = "none";
+  editForm.style.display = "none";
+  deleteForm.style.display = "none";
+  editButtons.forEach((item) => {
+    item.addEventListener("click", function () {
+      editForm.style.display = "block";
+      deleteForm.style.display = "none";
+      createForm.style.display = "none";
+      window.scrollTo(0,document.body.scrollHeight);
+      let buttonId = item.id;
+      switch (buttonId.length) {
+        // Covering up to 999 categories
+        case 14:
+          referenceNumber = buttonId.substr(12, 14);
+          break;
+        case 15:
+          referenceNumber = buttonId.substr(12, 15);
+          break;
+        default:
+          referenceNumber = buttonId.substr(12, 13);
+          break;
+      }
+      document.forms["edit_user_form"]["Edit_fullname"].value =
+        userNames[referenceNumber - 1].innerText;
+      document.forms["edit_user_form"]["Edit_email"].value =
+        userEmail[referenceNumber - 1].innerText;
+      document.forms["edit_user_form"]["Edit_email_hidden"].value =
+        userEmail[referenceNumber - 1].innerText;
+      document.forms["edit_user_form"]["Edit_fullname_hidden"].value =
+        userNames[referenceNumber - 1].innerText;
+      document.forms["edit_user_form"]["Edit_admin"].value =
+        userSuperAdmin[referenceNumber - 1].innerText;
+      document.forms["edit_user_form"]["Edit_admin_hidden"].value =
+        userSuperAdmin[referenceNumber - 1].innerText;
+      document.forms["edit_user_form"]["Edit_customer"].value =
+        userCustomer[referenceNumber - 1].innerText;
+      document.forms["edit_user_form"]["Edit_customer_hidden"].value =
+        userCustomer[referenceNumber - 1].innerText;
+      document.forms["edit_user_form"]["Edit_billing_card"].value =
+        userBillingCard[referenceNumber - 1].innerText;
+      document.forms["edit_user_form"]["Edit_billing_card_hidden"].value =
+        userBillingCard[referenceNumber - 1].innerText;
+      if (adminButton.value === "true") {
+        adminButton.checked = true;
+      } else {
+        adminButton.checked = false;
+      }
+      if (customerButton.value === "true") {
+        customerButton.checked = true;
+      } else {
+        customerButton.checked = false;
+      }
+      if (billingCard.value === "true") {
+        billingCard.checked = true;
+      } else {
+        billingCard.checked = false;
+      }
+    });
+  });
+  deleteButtons.forEach((item) => {
+    item.addEventListener("click", function () {
+      editForm.style.display = "none";
+      deleteForm.style.display = "block";
+      createForm.style.display = "none";
+      let buttonId = item.id;
+      window.scrollTo(0,document.body.scrollHeight);
+      switch (buttonId.length) {
+        // Covering up to 999 categories
+        case 16:
+          referenceNumber = buttonId.substr(14, 16);
+          break;
+        case 17:
+          referenceNumber = buttonId.substr(14, 17);
+          break;
+        default:
+          referenceNumber = buttonId.substr(14, 15);
+          break;
+      }
+      document.forms["delete_user_form"]["Delete_fullname"].value =
+        userNames[referenceNumber - 1].innerText;
+      document.forms["delete_user_form"]["Delete_email"].value =
+        userEmail[referenceNumber - 1].innerText;
+      document.forms["delete_user_form"]["Delete_admin_hidden"].value =
+        userSuperAdmin[referenceNumber - 1].innerText;
+      document.forms["delete_user_form"]["Delete_customer_hidden"].value =
+        userCustomer[referenceNumber - 1].innerText;
+      document.forms["delete_user_form"]["Delete_billing_card_hidden"].value =
+        userBillingCard[referenceNumber - 1].innerText;
+    });
+  });
+  adminButton.addEventListener("change", function () {
+    if (adminButton.checked) {
+      adminButton.value = true;
+    } else {
+      adminButton.value = false;
+    }
+  });
+  customerButton.addEventListener("change", function () {
+    if (customerButton.checked) {
+      customerButton.value = true;
+    } else {
+      customerButton.value = false;
+    }
+  });
+  billingCard.addEventListener("change", function () {
+    if (billingCard.checked) {
+      billingCard.value = true;
+    } else {
+      billingCard.value = false;
+    }
+  });
+</script>
